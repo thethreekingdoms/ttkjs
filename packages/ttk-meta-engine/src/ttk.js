@@ -69,7 +69,7 @@ function metaToComponent(meta, props, data) {
         return meta
     }
     else if (metaType == 'object') {
-        if (meta.component) {
+        if (meta.component || meta._for || meta._function) {
 
             if (meta._visible === false)
                 return null
@@ -106,8 +106,8 @@ function metaToComponent(meta, props, data) {
                     dsPath = utils.string.trim(tmp[1]),
                     extParaNames = tmp[0].replace('(', '').replace(')', '').split(','),
                     express = `${dsPath.replace(/\$/g, '$props$.')}`
-
-                if (config.current.transformer) {
+                
+                if(config.current.transformer){
                     express = config.current.transformer(express)
                 }
 

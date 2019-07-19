@@ -39,7 +39,7 @@ function createDir(root, name) {
 function createPackageJson(root, name) {
   console.log(`  ${chalk.bold('[2/3]')} Create a package.json file`)
   const packageJson = {
-    isPubApp: true,
+    isTTKApp: true,
     name: name,
     description: name,
     version: '1.0.0',

@@ -1,6 +1,6 @@
 var isProduction = process.argv.splice(2).length > 0
 
-var r = require('request');
+var request = require('request');
 const fs = require('fs');
 const url = require('url');
 const path = require('path');
@@ -30,10 +30,11 @@ else
     ]
 
 jss.forEach(js => {
-    r(js, function (err, res, body) {
+    request(js, function (err, res, body) {
         var o = path.parse(js)
         var base = o.base
-        base = base.replace('production.min', 'development')
+        if(!isProduction)
+            base = base.replace('production.min', 'development')
         fs.createWriteStream(`dist/${isProduction ? 'release/' : 'debug/'}` + base).write(body)
     })
 })

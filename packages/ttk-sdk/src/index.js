@@ -7,6 +7,9 @@ import metaEngine from '@ttkjs/meta-engine'
 
 var globalObj = utils.getGlobal()
 
+
+globalObj.self = globalObj
+
 utils.fetch.config({
     mock: true
 })
@@ -24,6 +27,7 @@ var Hoc,
     isProduction = process.env.isProduction,
     createElement = React.createElement,
     getComponent = metaEngine.componentFactory.getComponent.bind(metaEngine.componentFactory),
+    getTemplate = metaEngine.templateFactory.getTemplate.bind(metaEngine.templateFactory),
     getAction = metaEngine.actionFactory.getAction.bind(metaEngine.actionFactory),
     asyncGetAction = metaEngine.actionFactory.asyncGetAction.bind(metaEngine.actionFactory),
     registerComponent = metaEngine.componentFactory.registerComponent.bind(metaEngine.componentFactory),
@@ -74,7 +78,7 @@ function createAppElement(appName, appProps) {
         return (<Hoc><Internal /></Hoc>)
     }
     else {
-        return Internal
+        return <Internal />
     }
 }
 
@@ -134,6 +138,7 @@ export default {
     config,
     load,
     getComponent,
+    getTemplate,
     getAction,
     asyncGetAction,
     registerComponent,
@@ -167,6 +172,7 @@ export {
     config,
     load,
     getComponent,
+    getTemplate,
     getAction,
     asyncGetAction,
     registerComponent,

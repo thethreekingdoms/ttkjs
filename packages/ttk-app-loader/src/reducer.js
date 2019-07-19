@@ -40,10 +40,10 @@ function loadApp(state, {
             return state
         }
 
-        if (!forceLoad)
+        if(!forceLoad)
             state = state.set(fullName, Map())
         else
-            state = state.set(fullName, Map({ prevData: state.getIn([fullName, 'data']) }))
+            state = state.set(fullName, Map({prevData: state.getIn([fullName, 'data'])}))
 
         appInfo = { ...appInfo }
 

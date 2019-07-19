@@ -28,7 +28,7 @@ function buildApp(dir) {
         if (stats.isFile()) {
             if (fileName === 'package.json') {
                 let subAppJson = require(path.join(dir, 'package.json'))
-                if (subAppJson.isPubApp) {
+                if (subAppJson.isTTKApp) {
                     process.chdir(dir);
                     spawn.sync('node',
                         [path.resolve(__dirname, '..', 'scripts', 'build.js'), true],

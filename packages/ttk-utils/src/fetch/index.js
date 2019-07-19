@@ -46,7 +46,15 @@ function isMockUrl(url) {
 	if (!_options.excludeMockUrls)
 		return _options.mock
 
-	if (_options.excludeMockUrls.find(o => o == url)) {
+	if (_options.excludeMockUrls.find(o => {
+		if(o === url)
+			return true
+		if(o.test && o.test(url))
+			return true 
+
+		return false
+		
+	})) {
 		return !_options.mock
 	}
 	else {
@@ -86,7 +94,7 @@ function get(url, headers, option) {
 		})
 	}
 
-	headers = {
+	let request = headers = {
 		method: 'GET',
 		headers: {
 			'Accept': 'application/json',
@@ -94,15 +102,20 @@ function get(url, headers, option) {
 			...headers,
 			token: getAccessToken(),
 			"Authorization": getAccessToken()? "Bearer " + getAccessToken() : ''
-		},
-
+		}, 
 	}
 
+	if(option && option.token) { 
+		request.headers['token'] = option.token
+		request.headers["Authorization"] = "Bearer " + option.token
+	}
+	
 	return new Promise((resolve, reject) => {
-		fetch(url, headers)
+		fetch(url, request)
 			.then(response => {
 				let json = {}
-				let contentType = response.headers.get('Content-Type').split(";")[0]
+				let contentType = response.headers.get('Content-Type');
+				contentType = contentType && contentType.split(";")[0]
 				if(contentType == 'application/json' ){
 					json = response.json()
 				}else if(contentType == 'application/octet-stream' ){
@@ -119,7 +132,7 @@ function get(url, headers, option) {
 				return json
 			})
 			.then(responseJson => {
-				responseJson = after(responseJson, url, undefined, headers)
+				responseJson = after(responseJson, url, undefined, request)
 				resolve(responseJson)
 			})
 			.catch(error => reject(error))
@@ -161,7 +174,7 @@ function post(url, data, headers, option) {
 		})
 	}
 
-	headers = {
+	let request = {
 		method: 'POST',
 		headers: {
 			'Accept': 'application/json',
@@ -173,14 +186,18 @@ function post(url, data, headers, option) {
 		body: JSON.stringify(data)
 	}
 	if(option && option.type == 'file'){
-		headers.body = option.body
-		delete headers.headers['Content-Type']
+		request.body = option.body
+		delete request.headers['Content-Type']
+	}
+
+	if(option && option.token) { 
+		request.headers['token'] = option.token
+		request.headers["Authorization"] = "Bearer " + option.token
 	}
 
 	return new Promise((resolve, reject) => {
-		fetch(url, headers)
-			.then(response => {
-
+		fetch(url, request)
+			.then(response => { 
 				let json = {}
 				let contentType = response.headers.get('Content-Type').split(";")[0]
 				let contentDisposition = response.headers.get('Content-Disposition')
@@ -202,7 +219,7 @@ function post(url, data, headers, option) {
 			
 			})
 			.then(responseJson => {
-				responseJson = after(responseJson, url, data, headers)
+				responseJson = after(responseJson, url, data, request)
 				resolve(responseJson)
 			})
 			.catch(error => reject(error))

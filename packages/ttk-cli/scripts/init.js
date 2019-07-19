@@ -114,6 +114,6 @@ module.exports = function (
   console.log(chalk.cyan('  cd'), appName);
   console.log(`  ${chalk.cyan(`${displayedCommand} start`)}`);
   console.log();
-  const str = Alphabet('TTK', 'stereo')
+  const str = Alphabet('TTKJS', 'stereo')
   console.log(str)
 };

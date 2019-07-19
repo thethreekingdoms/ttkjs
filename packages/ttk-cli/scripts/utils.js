@@ -107,10 +107,27 @@ function delSdkFiles(dir) {
     })
 }
 
+function delDir(path){
+    let files = [];
+    if(fs.existsSync(path)){
+        files = fs.readdirSync(path);
+        files.forEach((file, index) => {
+            let curPath = path + "/" + file;
+            if(fs.statSync(curPath).isDirectory()){
+                delDir(curPath); //µÝ¹éÉ¾³ýÎÄ¼þ¼Ð
+            } else {
+                fs.unlinkSync(curPath); //É¾³ýÎÄ¼þ
+            }
+        });
+        fs.rmdirSync(path);
+    }
+}
+
 module.exports = {
     yarn,
     npm,
     fixName,
-    delSdkFiles
+    delSdkFiles,
+    delDir
 }
 

@@ -50,6 +50,7 @@ async function main() {
     copyDep()
     createMainJsFile()
     createHtmlFile()
+    copyAssets()
 
     console.log(chalk.green(`Packaged successfully,Output directory:${outputPath}\n`));
     return Promise.resolve()
@@ -104,15 +105,16 @@ function createMainJsFile() {
     const tplPath = path.resolve(__dirname, '..', 'template', isDev ? 'main.js' : 'main.min.js');
     let content = fs.readFileSync(tplPath, 'utf-8');
     if (packageJson.requirejs && packageJson.requirejs.paths) {
-        var strPaths = JSON.stringify(packageJson.requirejs.paths)
-        content = content.replace('<ext>', strPaths.substr(1, strPaths.length - 2))
+      var strPaths = JSON.stringify(packageJson.requirejs.paths)
+      content = content.replace('<ext>', strPaths.substr(1, strPaths.length - 2))
     }
     else {
-        content = content.replace('<ext>', '')
+      content = content.replace('<ext>', '')
     }
     fs.writeFileSync(path.resolve(outputPath, isDev ? 'main.js' : 'main.min.js'), content);
-}
-
+    fs.writeFileSync(path.resolve(outputPath, isDev ? 'ttk-main.js' : 'ttk-main.min.js'), content);
+  }
+  
 
 function createHtmlFile() {
     console.log(`  ${chalk.bold('[6/6]')} Create an html file...`)
@@ -125,5 +127,11 @@ function createHtmlFile() {
     fs.writeFileSync(path.resolve(outputPath, 'index.html'), html);
 }
 
-
+function copyAssets() {
+    let assetsPath = path.resolve(paths.appPath, 'assets')
+    if (fs.existsSync(assetsPath)) {
+      let target = outputPath
+      fs.copySync(assetsPath, target)
+    }
+  }
 

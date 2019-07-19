@@ -16,8 +16,8 @@ const paths = require('../config/paths');
 const packageJson = require(paths.appPackageJson);
 var appsDirectorys = []
 
-if (packageJson.subAppDir instanceof Array) {
-  packageJson.subAppDir.forEach(o => {
+if(packageJson.subAppDir instanceof Array){
+  packageJson.subAppDir.forEach(o=>{
     appsDirectorys.push(path.join(paths.appPath, o))
   })
 }
@@ -30,7 +30,7 @@ const chalk = require('chalk');
 const targetPath = process.argv[3];
 const isDev = process.argv[2] === 'true';
 var depPaths = [];
-appsDirectorys.forEach(p => {
+appsDirectorys.forEach(p=>{
   scanLocalApps(p)
 })
 
@@ -62,7 +62,7 @@ function scanLocalApps(dir) {
     if (stats.isFile()) {
       if (fileName === 'package.json') {
         let subAppJson = require(path.join(dir, 'package.json'))
-        if (subAppJson.isPubApp) {
+        if (subAppJson.isTTKApp) {
           let appPath = path.relative(paths.appPath, dir)
           if (depPaths.indexOf(appPath) == -1) {
             depPaths.push([appPath, subAppJson.name])
@@ -82,7 +82,7 @@ function scanRemoteApps(json) {
     var filePath = path.resolve(paths.appSrc, 'node_modules', k, 'package.json')
     if (fs.existsSync(filePath)) {
       let pkg = JSON.parse(fs.readFileSync(path.resolve(paths.appSrc, 'node_modules', k, 'package.json'), 'utf-8'))
-      if (pkg.isPubApp) {
+      if (pkg.isTTKApp) {
         let appPath = path.join(paths.appSrc, 'node_modules', k)
         if (depPaths.indexOf(appPath) == -1) {
           depPaths.push([appPath, pkg.name])
